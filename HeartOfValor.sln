@@ -1,0 +1,56 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "GameClient", "GameClient\GameClient.vcxproj", "{59913721-7286-40F3-A286-1E056BC85B03}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Core", "..\WinCore\WinCore.vcxproj", "{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug - Intel C++|Win32 = Debug - Intel C++|Win32
+		Debug - Intel C++|x64 = Debug - Intel C++|x64
+		Debug|Win32 = Debug|Win32
+		Debug|x64 = Debug|x64
+		Release - Intel C++|Win32 = Release - Intel C++|Win32
+		Release - Intel C++|x64 = Release - Intel C++|x64
+		Release|Win32 = Release|Win32
+		Release|x64 = Release|x64
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug - Intel C++|Win32.ActiveCfg = Debug|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug - Intel C++|Win32.Build.0 = Debug|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug - Intel C++|x64.ActiveCfg = Debug|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug - Intel C++|x64.Build.0 = Debug|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug|Win32.ActiveCfg = Debug|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug|Win32.Build.0 = Debug|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug|x64.ActiveCfg = Debug|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Debug|x64.Build.0 = Debug|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release - Intel C++|Win32.ActiveCfg = Release|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release - Intel C++|Win32.Build.0 = Release|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release - Intel C++|x64.ActiveCfg = Release|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release - Intel C++|x64.Build.0 = Release|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release|Win32.ActiveCfg = Release|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release|Win32.Build.0 = Release|Win32
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release|x64.ActiveCfg = Release|x64
+		{59913721-7286-40F3-A286-1E056BC85B03}.Release|x64.Build.0 = Release|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug - Intel C++|Win32.ActiveCfg = Debug - Intel C++|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug - Intel C++|Win32.Build.0 = Debug - Intel C++|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug - Intel C++|x64.ActiveCfg = Debug - Intel C++|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug - Intel C++|x64.Build.0 = Debug - Intel C++|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug|Win32.ActiveCfg = Debug|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug|Win32.Build.0 = Debug|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug|x64.ActiveCfg = Debug|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Debug|x64.Build.0 = Debug|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release - Intel C++|Win32.ActiveCfg = Release - Intel C++|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release - Intel C++|Win32.Build.0 = Release - Intel C++|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release - Intel C++|x64.ActiveCfg = Release - Intel C++|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release - Intel C++|x64.Build.0 = Release - Intel C++|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release|Win32.ActiveCfg = Release|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release|Win32.Build.0 = Release|Win32
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release|x64.ActiveCfg = Release|x64
+		{43AC74E9-A89D-4E31-8C01-FA2CCE27F5C2}.Release|x64.Build.0 = Release|x64
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
