@@ -16,79 +16,38 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#include "game_client.h"
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
-#ifdef _DEBUG
-void EnableCrashingOnCrashes() 
-{ 
-    typedef BOOL (WINAPI *tGetPolicy)(LPDWORD lpFlags); 
-    typedef BOOL (WINAPI *tSetPolicy)(DWORD dwFlags); 
-    const DWORD EXCEPTION_SWALLOWING = 0x1;
-
-    HMODULE kernel32 = LoadLibraryA("kernel32.dll"); 
-    tGetPolicy pGetPolicy = (tGetPolicy)GetProcAddress(kernel32, 
-                "GetProcessUserModeExceptionPolicy"); 
-    tSetPolicy pSetPolicy = (tSetPolicy)GetProcAddress(kernel32, 
-                "SetProcessUserModeExceptionPolicy"); 
-    if (pGetPolicy && pSetPolicy) 
-    { 
-        DWORD dwFlags; 
-        if (pGetPolicy(&dwFlags)) 
-        { 
-            // Turn off the filter 
-            pSetPolicy(dwFlags & ~EXCEPTION_SWALLOWING); 
-        } 
-    } 
-}
-#endif
-
-class GameClient : public core::windows::Application {
- public: 
-   MainWindow win;
-   GameClient(HINSTANCE instance , LPSTR command_line, int show_command) : Application() {
-    if (RanBefore("RPGDemo-GameClient") == true) {
-      MessageBox(nullptr,"App already running","Error",MB_ICONWARNING|MB_OK);
-      exit(0);
-    }
-    #ifdef _DEBUG
-    EnableCrashingOnCrashes();
-    #endif
-    #ifndef _WIN64
-      unsigned old_fp_state;
-      _controlfp_s(&old_fp_state, _PC_53, _MCW_PC);
-      //_controlfp(_RC_NEAR, _MCW_RC);
-    #endif
-    srand((unsigned int)time(0));
-    CoInitializeEx(nullptr,COINIT_MULTITHREADED);
-    win.Initialize();
-   }
-  ~GameClient() {
-
-  }
-
-  int Run() {
-    MSG msg;
-    do {
-      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-      } else {
-        win.Step();
-      }
-    } while(msg.message!=WM_QUIT);
-    return static_cast<int>(msg.wParam);
-  }
+class MainWindow: public core::windows::Window {
+  public:
+    MainWindow();
+    ~MainWindow();
+    void Initialize();
+    void Step();
+    utilities::Timer& timer() { return timer_; }
+   protected:
+    int OnCreate(WPARAM wParam,LPARAM lParam);
+    int OnDestroy(WPARAM wParam,LPARAM lParam);
+    int OnKeyDown(WPARAM wParam,LPARAM lParam);
+    int OnKeyUp(WPARAM wParam,LPARAM lParam);
+    int OnActivate(WPARAM wParam,LPARAM lParam);
+  private:
+    Game game_instance;
+    utilities::Timer  timer_;
+    struct {
+      uint64_t extra_cycles;
+      uint64_t current_cycles;
+      uint64_t prev_cycles;
+      uint64_t total_cycles;
+      double render_time_span;
+      double fps_time_span;
+      double span_accumulator;
+      uint32_t fps_counter;
+      uint32_t ups_counter;
+      uint32_t fps;
+      uint32_t ups;
+    } timing;
 };
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-  //int test_padsynth();
-  //test_padsynth();
-  //fft_test();
-  //samples_test();
-  //void test_karplusStrong();
-  //test_karplusStrong();
-
-  GameClient app(hInstance,lpCmdLine,nShowCmd);
-  //AddThreeAndPrint();
-  return app.Run();
-}
+#endif

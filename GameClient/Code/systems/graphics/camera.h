@@ -16,79 +16,73 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#include "game_client.h"
+#ifndef SYSTEMS_GRAPHICS_CAMERA_H
+#define SYSTEMS_GRAPHICS_CAMERA_H
 
-#ifdef _DEBUG
-void EnableCrashingOnCrashes() 
-{ 
-    typedef BOOL (WINAPI *tGetPolicy)(LPDWORD lpFlags); 
-    typedef BOOL (WINAPI *tSetPolicy)(DWORD dwFlags); 
-    const DWORD EXCEPTION_SWALLOWING = 0x1;
+namespace systems {
+namespace graphics {
 
-    HMODULE kernel32 = LoadLibraryA("kernel32.dll"); 
-    tGetPolicy pGetPolicy = (tGetPolicy)GetProcAddress(kernel32, 
-                "GetProcessUserModeExceptionPolicy"); 
-    tSetPolicy pSetPolicy = (tSetPolicy)GetProcAddress(kernel32, 
-                "SetProcessUserModeExceptionPolicy"); 
-    if (pGetPolicy && pSetPolicy) 
-    { 
-        DWORD dwFlags; 
-        if (pGetPolicy(&dwFlags)) 
-        { 
-            // Turn off the filter 
-            pSetPolicy(dwFlags & ~EXCEPTION_SWALLOWING); 
-        } 
-    } 
-}
-#endif
+class Camera {
+ public:
+ 
 
-class GameClient : public core::windows::Application {
- public: 
-   MainWindow win;
-   GameClient(HINSTANCE instance , LPSTR command_line, int show_command) : Application() {
-    if (RanBefore("RPGDemo-GameClient") == true) {
-      MessageBox(nullptr,"App already running","Error",MB_ICONWARNING|MB_OK);
-      exit(0);
-    }
-    #ifdef _DEBUG
-    EnableCrashingOnCrashes();
-    #endif
-    #ifndef _WIN64
-      unsigned old_fp_state;
-      _controlfp_s(&old_fp_state, _PC_53, _MCW_PC);
-      //_controlfp(_RC_NEAR, _MCW_RC);
-    #endif
-    srand((unsigned int)time(0));
-    CoInitializeEx(nullptr,COINIT_MULTITHREADED);
-    win.Initialize();
-   }
-  ~GameClient() {
+  Camera() : ratio_(0) {
 
   }
-
-  int Run() {
-    MSG msg;
-    do {
-      if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
-        TranslateMessage(&msg);
-        DispatchMessage(&msg);
-      } else {
-        win.Step();
-      }
-    } while(msg.message!=WM_QUIT);
-    return static_cast<int>(msg.wParam);
+  virtual ~Camera() {
+    Deinitialize();
   }
+
+  virtual int Initialize() {
+    int hr = S_OK;
+    return hr;
+  }
+
+
+  virtual int Deinitialize() {
+    return S_OK;
+  }
+
+  void Ortho2D(float width,float height) {
+    //RECT rect;
+	  //GetClientRect(context()->window()->handle(),&rect);
+    //D3DXMatrixOrthoLH(&Ortho2D, (FLOAT)rect.right, (FLOAT)rect.bottom, 0.0f, 1.0f);
+    //D3DXMatrixOrthoOffCenterLH(&Ortho2D, 0.0f,(FLOAT)rect.right,(FLOAT)rect.bottom,0.0f,0.0f,1.0f);
+    ratio_ = width/height;
+    //D3DXMatrixOrthoOffCenterLH(&projection_, 0.0f,ratio,1.0f,0.0f,0.0f,1.0f);
+    projection_ = DirectX::XMMatrixOrthographicOffCenterLH(0.0f,width,height,0.0f,-10000.0f,10000.0f);
+	  //D3DXMatrixIdentity(&view_);
+    view_ = DirectX::XMMatrixIdentity();
+  }
+
+  void Ortho2D(FLOAT left, FLOAT top, FLOAT right, FLOAT bottom) {
+    projection_ = DirectX::XMMatrixOrthographicOffCenterLH(left,right,bottom,top,-10000.0f,10000.0f);
+    view_ = DirectX::XMMatrixIdentity();
+  }
+
+
+  void Perspective(float width,float height) {
+    ratio_ = width/height;
+    projection_ = DirectX::XMMatrixPerspectiveFovLH(DirectX::XM_PIDIV4,ratio_, 0.01f, 100.0f);
+    view_ = DirectX::XMMatrixIdentity();
+  }
+
+
+  float ratio() { return ratio_; }
+  DirectX::XMMATRIX& projection() { return projection_;  }
+  DirectX::XMMATRIX& view() { return view_;  }
+  DirectX::XMMATRIX viewprojection() { return view_*projection_;  }
+  DirectX::XMMATRIX projection_transposed() { return DirectX::XMMatrixTranspose(projection_);  }
+  DirectX::XMMATRIX view_transposed() { return DirectX::XMMatrixTranspose(view_);  }
+  DirectX::XMMATRIX matrix() { return view_*projection_; }
+ private:
+  DirectX::XMMATRIX world;
+  DirectX::XMMATRIX view_;	
+  DirectX::XMMATRIX projection_;
+  float ratio_;
 };
 
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
-  //int test_padsynth();
-  //test_padsynth();
-  //fft_test();
-  //samples_test();
-  //void test_karplusStrong();
-  //test_karplusStrong();
-
-  GameClient app(hInstance,lpCmdLine,nShowCmd);
-  //AddThreeAndPrint();
-  return app.Run();
 }
+}
+
+#endif
