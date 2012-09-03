@@ -180,6 +180,7 @@
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
+    <None Include="Content\HLSL\common.hlsli" />
     <None Include="Content\HLSL\constant_buffers.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

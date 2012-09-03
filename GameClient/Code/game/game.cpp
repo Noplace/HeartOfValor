@@ -79,8 +79,8 @@ int Game::Initialize(core::windows::Window* window) {
   const D3D11_INPUT_ELEMENT_DESC layout[] =
   {
       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT   , 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      { "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      , 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      //{ "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      //{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      , 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   };
 
   gfx.device_->CreateInputLayout(layout,ARRAYSIZE(layout),vs_data,vs_length,&input_layout_) ;
@@ -141,14 +141,16 @@ int Game::Initialize(core::windows::Window* window) {
   cbDesc.ByteWidth = sizeof( CB_VS_PER_FRAME );
   gfx.device_->CreateBuffer( &cbDesc, NULL, &g_pcbVSPerFrame11);
   
+ 
+
 
 
    static SimpleVertex vertices[] =
   {
-      { XMFLOAT3( -1.0f, 1.0f, 0.0f),XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.0f, 0.0f ) },
-      { XMFLOAT3( 1.0f, 1.0f, 0.0f),XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.5f, 0.0f ) },
-      { XMFLOAT3( 1.0f, -1.0f, 0.0f), XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ),XMFLOAT2( 0.5f, 0.5f ) },
-      { XMFLOAT3( -1.0f, -1.0f, 0.0f),XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.2f, 0.5f ) },
+    { XMFLOAT3(  0.5f, 0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.0f, 0.0f ) },
+    { XMFLOAT3( 0.5f, -0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.5f, 0.0f ) },
+    { XMFLOAT3( -0.5f, -0.5f, 0.5f)},// XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ),XMFLOAT2( 0.5f, 0.5f ) },
+    { XMFLOAT3( -0.5f, -0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.2f, 0.5f ) },
     };
 
   {
@@ -169,7 +171,7 @@ int Game::Initialize(core::windows::Window* window) {
     //engine_->gfx_context().device_context()->UpdateSubresource((ID3D11Resource*)g_vb.internal_pointer,0,NULL,vertices,sizeof(vertices),0);
   }
 
-  gfx.context_->IASetInputLayout( input_layout_ );
+ 
   gfx.context_->VSSetShader( main_vs, NULL, 0 );
   gfx.context_->PSSetShader( main_ps, NULL, 0 );
   gfx.context_->PSSetSamplers( 0, 1, &g_pSamLinear );
@@ -223,12 +225,12 @@ int Game::Render() {
   gfx.context_->ClearRenderTargetView(gfx.target_,clearColor);
   gfx.context_->ClearDepthStencilView(gfx.depth_stencil_,D3D11_CLEAR_DEPTH,1.0f,0);
 
-  
-  gfx.context_->IASetPrimitiveTopology(D3D_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
+  gfx.context_->IASetInputLayout( input_layout_ );
+  gfx.context_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
   UINT stride[] = {sizeof(SimpleVertex)};
   UINT offset[]={0};
   gfx.context_->IASetVertexBuffers(0,1,&vb,stride,offset);
-  gfx.context_->Draw(4,0);
+  gfx.context_->Draw(3,0);
 
   gfx.swapchain_->Present(0,0);
   return S_OK;

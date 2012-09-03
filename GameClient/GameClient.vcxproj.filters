@@ -72,5 +72,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\HLSL\constant_buffers.hlsli" />
+    <None Include="Content\HLSL\common.hlsli" />
   </ItemGroup>
 </Project>
