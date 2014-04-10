@@ -16,28 +16,3 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#include "engine.h"
-
-namespace systems {
-namespace game {
-
-Engine::Engine() {
-
-}
-
-Engine::~Engine() {
-
-}
-
-int Engine::Initialize(core::windows::Window* window) {
-  graphics::Core::Initialize(window);
-  return S_OK;
-}
-
-int Engine::Deinitialize() {
-  graphics::Core::Deinitialize();
-  return S_OK;
-}
-
-}
-}

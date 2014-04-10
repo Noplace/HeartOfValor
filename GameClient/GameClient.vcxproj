@@ -87,6 +87,7 @@
       <WarningLevel>Level3</WarningLevel>
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <ExceptionHandling>false</ExceptionHandling>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -143,10 +144,9 @@
   <ItemGroup>
     <ClCompile Include="Code\game\game.cpp" />
     <ClCompile Include="Code\main_window.cpp" />
-    <ClCompile Include="Code\systems\game\engine.cpp" />
-    <ClCompile Include="Code\systems\graphics\core.cpp" />
     <ClCompile Include="Code\systems\io.cpp" />
     <ClCompile Include="Code\systems\memory.cpp" />
+    <ClCompile Include="Code\Tutorial03.cpp" />
     <ClCompile Include="Code\winmain.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -154,15 +154,14 @@
     <ClInclude Include="Code\main_window.h" />
     <ClInclude Include="Code\systems\debug.h" />
     <ClInclude Include="Code\game_client.h" />
-    <ClInclude Include="Code\systems\game\engine.h" />
-    <ClInclude Include="Code\systems\graphics\camera.h" />
-    <ClInclude Include="Code\systems\graphics\core.h" />
-    <ClInclude Include="Code\systems\graphics\graphics.h" />
     <ClInclude Include="Code\systems\memory.h" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\WinCore\WinCore.vcxproj">
       <Project>{43ac74e9-a89d-4e31-8c01-fa2cce27f5c2}</Project>
+    </ProjectReference>
+    <ProjectReference Include="..\GameEngine\GameEngine.vcxproj">
+      <Project>{7c5d5b90-fb93-4be8-a69d-c004c1252425}</Project>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
@@ -170,18 +169,21 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)Content\HLSL\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="Content\HLSL\main_vs.hlsl">
       <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</DeploymentContent>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectDir)Content\HLSL\%(Filename).cso</ObjectFileOutput>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">3.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="Content\HLSL\common.hlsli" />
     <None Include="Content\HLSL\constant_buffers.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Graphics\sword-clash.png" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

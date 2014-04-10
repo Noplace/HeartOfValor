@@ -11,8 +11,8 @@ VS_OUTPUT main( VS_INPUT input )
     //float3 vNormalWorldSpace;
     
     // Transform the position from object space to homogeneous projection space
-    Output.Position = input.Position;//mul( float4(input.Position,1.0f), g_mWorld );
-    //Output.Position = mul( Output.Position, g_mWorldViewProjection );
+    Output.Position = mul( float4(input.Position,1.0f), g_mWorld );
+    Output.Position = mul( Output.Position, g_mWorldViewProjection );
 
     //Output.Position = mul(input.Position, g_mWorldViewProjection);
     
@@ -22,8 +22,8 @@ VS_OUTPUT main( VS_INPUT input )
     // Calc diffuse color    
     //Output.Diffuse.rgb = g_MaterialDiffuseColor * g_LightDiffuse * max(0,dot(vNormalWorldSpace, g_vLightDir)) + 
                         // g_MaterialAmbientColor;   
-    Output.Diffuse = float4(1,1,1,1);
-    //Output.Diffuse = input.Diffuse;
+
+    Output.Diffuse = input.Diffuse;
     // Just copy the texture coordinate through
     Output.TextureUV = float2(0,0);//input.TextureUV; 
     

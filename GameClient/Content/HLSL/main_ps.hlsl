@@ -13,5 +13,5 @@ SamplerState g_samLinear : register( s0 );
 float4 main( VS_OUTPUT In ) : SV_TARGET
 { 
     // Lookup mesh texture and modulate it with diffuse
-    return float4(1,1,1,1);//In.Diffuse;//g_txDiffuse.Sample( g_samLinear, In.TextureUV ) * In.Diffuse;
+    return In.Diffuse;//g_txDiffuse.Sample( g_samLinear, In.TextureUV ) * In.Diffuse;
 }

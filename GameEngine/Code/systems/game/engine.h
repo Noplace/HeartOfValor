@@ -16,23 +16,31 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#ifndef GAME_GAME_H
-#define GAME_GAME_H
+#ifndef SYSTEMS_GAME_ENGINE_H
+#define SYSTEMS_GAME_ENGINE_H
 
-#include "../../../GameEngine/Code/systems/game/engine.h"
+#include <WinCore/windows/windows.h>
+#ifdef _DEBUG
+#include <WinCore/log/log_manager.h>
+#endif
+#include "../graphics/graphics.h"
 
-class Game : public systems::game::Engine {
+namespace systems {
+namespace game {
+
+class Engine {
  public:
-  Game() : systems::game::Engine() {}
-  ~Game() {}
-  int Initialize(core::windows::Window* window);
-  int Deinitialize();
-  int Update(double dt);
-  int Render();
+  Engine();
+  virtual ~Engine();
+  virtual int Initialize(core::windows::Window* window);
+  virtual int Deinitialize();
+  virtual int Update(double dt) = 0;
+  virtual int Render() = 0;
  protected:
-  ID3D11VertexShader* main_vs;
-  ID3D11PixelShader*  main_ps;
-  ID3D11InputLayout*  input_layout_;
+  graphics::Core graphics;
 };
+
+}
+}
 
 #endif

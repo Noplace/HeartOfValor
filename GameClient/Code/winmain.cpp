@@ -80,7 +80,10 @@ class GameClient : public core::windows::Application {
   }
 };
 
+
+int WINAPI runtut( HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nCmdShow );
 int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdLine, int nShowCmd) {
+ 
   //int test_padsynth();
   //test_padsynth();
   //fft_test();
@@ -90,5 +93,5 @@ int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR lpCmdL
 
   GameClient app(hInstance,lpCmdLine,nShowCmd);
   //AddThreeAndPrint();
-  return app.Run();
+  return  app.Run();//runtut(hInstance,hPrevInstance,lpCmdLine,nShowCmd);//app.Run();
 }

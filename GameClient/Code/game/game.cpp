@@ -66,24 +66,24 @@ int Game::Initialize(core::windows::Window* window) {
   uint8_t* vs_data;
   size_t vs_length;
   core::io::ReadWholeFileBinary(vs_shader,&vs_data,vs_length);
-  gfx.device_->CreateVertexShader(vs_data,vs_length,NULL,&main_vs);
+  graphics.device_->CreateVertexShader(vs_data,vs_length,NULL,&main_vs);
 
   uint8_t* ps_data;
   size_t ps_length;
   
   core::io::ReadWholeFileBinary(ps_shader,&ps_data,ps_length);
-  gfx.device_->CreatePixelShader(ps_data,ps_length,NULL,&main_ps);
+  graphics.device_->CreatePixelShader(ps_data,ps_length,NULL,&main_ps);
 
 
   // Create a layout for the object data
   const D3D11_INPUT_ELEMENT_DESC layout[] =
   {
       { "POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT   , 0,  0, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      //{ "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
-      //{ "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      , 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "COLOR"   , 0, DXGI_FORMAT_R32G32B32A32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0 },
+      { "TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT      , 0, 28, D3D11_INPUT_PER_VERTEX_DATA, 0 },
   };
 
-  gfx.device_->CreateInputLayout(layout,ARRAYSIZE(layout),vs_data,vs_length,&input_layout_) ;
+  graphics.device_->CreateInputLayout(layout,ARRAYSIZE(layout),vs_data,vs_length,&input_layout_) ;
  
 
   core::io::DestroyFileBuffer(&vs_data);
@@ -92,13 +92,13 @@ int Game::Initialize(core::windows::Window* window) {
 
   
   cam.Initialize();
-  cam.Perspective(gfx.width_,gfx.height_);
+  cam.Perspective(graphics.width(),graphics.height());
   
-  XMVECTOR Eye = XMVectorSet( 0.0f, 3.0f, -6.0f, 0.0f );
+  XMVECTOR Eye = XMVectorSet( 0.0f, 2.0f, -3.0f, 0.0f );
   XMVECTOR At = XMVectorSet( 0.0f, 0.0f, 0.0f, 0.0f );
   XMVECTOR Up = XMVectorSet( 0.0f, 1.0f, 0.0f, 0.0f );
   cam.view() = XMMatrixLookAtLH( Eye, At, Up );  
-  //cam.Ortho2D(gfx.width_,gfx.height_);
+  //cam.Ortho2D(graphics.width_,graphics.height_);
 
 
   // Create state objects
@@ -109,7 +109,7 @@ int Game::Initialize(core::windows::Window* window) {
   samDesc.MaxAnisotropy = 1;
   samDesc.ComparisonFunc = D3D11_COMPARISON_ALWAYS;
   samDesc.MaxLOD = D3D11_FLOAT32_MAX;
-  gfx.device_->CreateSamplerState( &samDesc, &g_pSamLinear );
+  graphics.device_->CreateSamplerState( &samDesc, &g_pSamLinear );
   
 
 
@@ -131,7 +131,7 @@ int Game::Initialize(core::windows::Window* window) {
   D3D11_SUBRESOURCE_DATA data;
   ZeroMemory( &data, sizeof(data) );
   data.pSysMem = &mem;
-  gfx.device_->CreateBuffer( &cbDesc, &data, &g_pcbVSPerObject11 );
+  graphics.device_->CreateBuffer( &cbDesc, &data, &g_pcbVSPerObject11 );
 
 
   ZeroMemory( &cbDesc, sizeof(cbDesc) );
@@ -139,7 +139,7 @@ int Game::Initialize(core::windows::Window* window) {
   cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
   cbDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
   cbDesc.ByteWidth = sizeof( CB_VS_PER_FRAME );
-  gfx.device_->CreateBuffer( &cbDesc, NULL, &g_pcbVSPerFrame11);
+  graphics.device_->CreateBuffer( &cbDesc, NULL, &g_pcbVSPerFrame11);
   
  
 
@@ -147,10 +147,10 @@ int Game::Initialize(core::windows::Window* window) {
 
    static SimpleVertex vertices[] =
   {
-    { XMFLOAT3(  0.5f, 0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.0f, 0.0f ) },
-    { XMFLOAT3( 0.5f, -0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.5f, 0.0f ) },
-    { XMFLOAT3( -0.5f, -0.5f, 0.5f)},// XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ),XMFLOAT2( 0.5f, 0.5f ) },
-    { XMFLOAT3( -0.5f, -0.5f, 0.5f)},//XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ), XMFLOAT2( 0.2f, 0.5f ) },
+    { XMFLOAT3(  -0.5f, 0.5f, 0.5f),XMFLOAT4( 1.0f,0.0f,1.0f,1.0f ), XMFLOAT2( 0.0f, 0.0f ) },
+    { XMFLOAT3( 0.5f, 0.5f, 0.5f),XMFLOAT4( 1.0f,1.0f,0.0f,0.0f ), XMFLOAT2( 0.5f, 0.0f ) },
+    { XMFLOAT3( -0.5f, -0.5f, 0.5f), XMFLOAT4( 1.0f,1.0f,1.0f,1.0f ),XMFLOAT2( 0.5f, 0.5f ) },
+    { XMFLOAT3( 0.5f, -0.5f, 0.5f),XMFLOAT4( 1.0f,0.0f,1.0f,1.0f ), XMFLOAT2( 0.2f, 0.5f ) },
     };
 
   {
@@ -166,15 +166,15 @@ int Game::Initialize(core::windows::Window* window) {
     ZeroMemory( &vb_data, sizeof(vb_data) );
     vb_data.pSysMem = vertices;
     
-    gfx.device_->CreateBuffer(&vb_desc,&vb_data,&vb);
+    graphics.device_->CreateBuffer(&vb_desc,&vb_data,&vb);
 
     //engine_->gfx_context().device_context()->UpdateSubresource((ID3D11Resource*)g_vb.internal_pointer,0,NULL,vertices,sizeof(vertices),0);
   }
 
  
-  gfx.context_->VSSetShader( main_vs, NULL, 0 );
-  gfx.context_->PSSetShader( main_ps, NULL, 0 );
-  gfx.context_->PSSetSamplers( 0, 1, &g_pSamLinear );
+  graphics.context_->VSSetShader( main_vs, NULL, 0 );
+  graphics.context_->PSSetShader( main_ps, NULL, 0 );
+  graphics.context_->PSSetSamplers( 0, 1, &g_pSamLinear );
 
 
 
@@ -194,26 +194,26 @@ int Game::Update(double dt) {
 
     /*HRESULT hr;
     D3D11_MAPPED_SUBRESOURCE MappedResource;
-    gfx.context_->Map( g_pcbVSPerFrame11, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) ;
+    graphics.context_->Map( g_pcbVSPerFrame11, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) ;
     CB_VS_PER_FRAME* pVSPerFrame = ( CB_VS_PER_FRAME* )MappedResource.pData;
     pVSPerFrame->m_vLightDir = XMVectorSet( 0,0.707f,-0.707f,0 );
     pVSPerFrame->m_fTime = (float)0;
     pVSPerFrame->m_LightDiffuse =  XMVectorSet( 1.f, 1.f, 1.f, 1.f );
-    gfx.context_->Unmap( g_pcbVSPerFrame11, 0 );
-    gfx.context_->VSSetConstantBuffers( 1, 1, &g_pcbVSPerFrame11 );
+    graphics.context_->Unmap( g_pcbVSPerFrame11, 0 );
+    graphics.context_->VSSetConstantBuffers( 1, 1, &g_pcbVSPerFrame11 );
 
-    gfx.context_->Map( g_pcbVSPerObject11, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) ;
+    graphics.context_->Map( g_pcbVSPerObject11, 0, D3D11_MAP_WRITE_DISCARD, 0, &MappedResource ) ;
     CB_VS_PER_OBJECT* pVSPerObject = ( CB_VS_PER_OBJECT* )MappedResource.pData;
     pVSPerObject->m_mWorldViewProjection = XMMatrixTranspose(  cam.view() * cam.projection() );
     pVSPerObject->m_mWorld = XMMatrixIdentity();
     pVSPerObject->m_MaterialAmbientColor = XMVectorSet( 0.3f, 0.3f, 0.3f, 1.0f );
     pVSPerObject->m_MaterialDiffuseColor = XMVectorSet( 0.7f, 0.7f, 0.7f, 1.0f );
-    gfx.context_->Unmap( g_pcbVSPerObject11, 0 );
-    gfx.context_->VSSetConstantBuffers( 0, 1, &g_pcbVSPerObject11 );
+    graphics.context_->Unmap( g_pcbVSPerObject11, 0 );
+    graphics.context_->VSSetConstantBuffers( 0, 1, &g_pcbVSPerObject11 );
     */
   
-  gfx.context_->VSSetConstantBuffers( 0, 1, &g_pcbVSPerObject11 );
-  gfx.context_->VSSetConstantBuffers( 1, 1, &g_pcbVSPerFrame11 );
+  graphics.context_->VSSetConstantBuffers( 0, 1, &g_pcbVSPerObject11 );
+  graphics.context_->VSSetConstantBuffers( 1, 1, &g_pcbVSPerFrame11 );
   
 
 
@@ -222,16 +222,16 @@ int Game::Update(double dt) {
 
 int Game::Render() {
   float clearColor[4] = {0, 0, 0, 0};
-  gfx.context_->ClearRenderTargetView(gfx.target_,clearColor);
-  gfx.context_->ClearDepthStencilView(gfx.depth_stencil_,D3D11_CLEAR_DEPTH,1.0f,0);
+  graphics.context_->ClearRenderTargetView(graphics.target_,clearColor);
+  graphics.context_->ClearDepthStencilView(graphics.depth_stencil_,D3D11_CLEAR_DEPTH,1.0f,0);
 
-  gfx.context_->IASetInputLayout( input_layout_ );
-  gfx.context_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLELIST);
+  graphics.context_->IASetInputLayout( input_layout_ );
+  graphics.context_->IASetPrimitiveTopology(D3D11_PRIMITIVE_TOPOLOGY_TRIANGLESTRIP);
   UINT stride[] = {sizeof(SimpleVertex)};
   UINT offset[]={0};
-  gfx.context_->IASetVertexBuffers(0,1,&vb,stride,offset);
-  gfx.context_->Draw(3,0);
+  graphics.context_->IASetVertexBuffers(0,1,&vb,stride,offset);
+  graphics.context_->Draw(4,0);
 
-  gfx.swapchain_->Present(0,0);
+  graphics.swapchain_->Present(0,0);
   return S_OK;
 }

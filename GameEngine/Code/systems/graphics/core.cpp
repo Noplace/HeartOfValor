@@ -24,8 +24,7 @@
 namespace systems {
 namespace graphics {
 
-Core::Core() {
-  memset(&gfx,0,sizeof(gfx));
+Core::Core() : window_(nullptr),device_(nullptr),  context_(nullptr),  swapchain_(nullptr),  target_(nullptr),  depth_stencil_(nullptr) {
 }
 
 Core::~Core() {
@@ -44,8 +43,8 @@ int Core::Initialize(core::windows::Window* window) {
   window_ = window;
   RECT dimensions;
   GetClientRect( window_->handle(), &dimensions );
-  gfx.width_ = dimensions.right - dimensions.left;
-  gfx.height_ = dimensions.bottom - dimensions.top;
+  width_ = dimensions.right - dimensions.left;
+  height_ = dimensions.bottom - dimensions.top;
   auto result = CreateDeviceResources();
   if (result == S_OK)
     result = CreateWindowSizeDependentResources();
@@ -53,11 +52,11 @@ int Core::Initialize(core::windows::Window* window) {
 }
 
 int Core::Deinitialize() {
-  SafeRelease(&gfx.depth_stencil_);
-  SafeRelease(&gfx.target_);
-  SafeRelease(&gfx.swapchain_);
-  SafeRelease(&gfx.context_);
-  SafeRelease(&gfx.device_);
+  SafeRelease(&depth_stencil_);
+  SafeRelease(&target_);
+  SafeRelease(&swapchain_);
+  SafeRelease(&context_);
+  SafeRelease(&device_);
 
   return S_OK;
 }
@@ -80,14 +79,14 @@ int Core::CreateDeviceResources() {
 
   uint32_t creation_flags = 0;//D3D11_CREATE_DEVICE_BGRA_SUPPORT|D3D11_CREATE_DEVICE_SINGLETHREADED;
   #ifdef _DEBUG
-    creation_flags |= 0;//D3D11_CREATE_DEVICE_DEBUG;
+    creation_flags |= D3D11_CREATE_DEVICE_DEBUG;
   #endif
   HRESULT result;
-DXGI_SWAP_CHAIN_DESC swapchain_desc;
+  DXGI_SWAP_CHAIN_DESC swapchain_desc;
     memset(&swapchain_desc,0,sizeof(swapchain_desc));
-    swapchain_desc.BufferCount = 1;
-    swapchain_desc.BufferDesc.Width = gfx.width_;
-    swapchain_desc.BufferDesc.Height = gfx.height_;
+    swapchain_desc.BufferCount = 2;
+    swapchain_desc.BufferDesc.Width = width_;
+    swapchain_desc.BufferDesc.Height = height_;
     swapchain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT_R8G8B8A8_UNORM
     swapchain_desc.BufferDesc.RefreshRate.Numerator = 60;
     swapchain_desc.BufferDesc.RefreshRate.Denominator = 1;
@@ -106,10 +105,10 @@ DXGI_SWAP_CHAIN_DESC swapchain_desc;
                 feature_levels_count,
                 D3D11_SDK_VERSION,
                 &swapchain_desc,
-                &gfx.swapchain_,
-                &gfx.device_,
-                &gfx.feature_level_,
-                &gfx.context_);
+                &swapchain_,
+                &device_,
+                &feature_level_,
+                &context_);
     if (SUCCEEDED(result)) {
       break;
     }
@@ -121,8 +120,8 @@ DXGI_SWAP_CHAIN_DESC swapchain_desc;
 int Core::CreateWindowSizeDependentResources() {
 
 	// Calculate the necessary swap chain and render target size in pixels.
-  float windowWidth = gfx.width_;
-  float windowHeight = gfx.height_;
+  float windowWidth = width_;
+  float windowHeight = height_;
 
 	auto m_orientation = 0;
 	bool swapDimensions =
@@ -131,8 +130,8 @@ int Core::CreateWindowSizeDependentResources() {
 	auto m_renderTargetSizeWidth = swapDimensions ? windowHeight : windowWidth;
 	auto m_renderTargetSizeHeight = swapDimensions ? windowWidth : windowHeight;
 
-  if(gfx.swapchain_ != nullptr)	{
-		gfx.swapchain_->ResizeBuffers(2,
+  if(swapchain_ != nullptr)	{
+		swapchain_->ResizeBuffers(2,
       static_cast<UINT>(m_renderTargetSizeWidth),
 			static_cast<UINT>(m_renderTargetSizeHeight),
 			DXGI_FORMAT_B8G8R8A8_UNORM,
@@ -141,8 +140,8 @@ int Core::CreateWindowSizeDependentResources() {
     /*DXGI_SWAP_CHAIN_DESC swapchain_desc;
     memset(&swapchain_desc,0,sizeof(swapchain_desc));
     swapchain_desc.BufferCount = 2;
-    swapchain_desc.BufferDesc.Width = gfx.width_;
-    swapchain_desc.BufferDesc.Height = gfx.height_;
+    swapchain_desc.BufferDesc.Width = width_;
+    swapchain_desc.BufferDesc.Height = height_;
     swapchain_desc.BufferDesc.Format = DXGI_FORMAT_R8G8B8A8_UNORM;//DXGI_FORMAT_B8G8R8A8_UNORM;//DXGI_FORMAT_R8G8B8A8_UNORM
     swapchain_desc.BufferDesc.RefreshRate.Numerator = 60;
     swapchain_desc.BufferDesc.RefreshRate.Denominator = 1;
@@ -155,12 +154,12 @@ int Core::CreateWindowSizeDependentResources() {
 
 
     IDXGIDevice * pDXGIDevice;
-    auto result = gfx.device_->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
+    auto result = device_->QueryInterface(__uuidof(IDXGIDevice), (void **)&pDXGIDevice);
     IDXGIAdapter * pDXGIAdapter;
     result = pDXGIDevice->GetParent(__uuidof(IDXGIAdapter), (void **)&pDXGIAdapter);
     IDXGIFactory * pIDXGIFactory;
     pDXGIAdapter->GetParent(__uuidof(IDXGIFactory), (void **)&pIDXGIFactory);
-    result = pIDXGIFactory->CreateSwapChain(gfx.device_,&swapchain_desc,&gfx.swapchain_);
+    result = pIDXGIFactory->CreateSwapChain(device_,&swapchain_desc,&swapchain_);
     pIDXGIFactory->MakeWindowAssociation(window_->handle(),DXGI_MWA_NO_ALT_ENTER);
     SafeRelease(&pDXGIDevice);
     SafeRelease(&pDXGIAdapter);
@@ -173,11 +172,11 @@ int Core::CreateWindowSizeDependentResources() {
 
 
   ID3D11Texture2D* backbuffer_texture;
-  auto result = gfx.swapchain_->GetBuffer(0,__uuidof(ID3D11Texture2D),(LPVOID*)&backbuffer_texture);
+  auto result = swapchain_->GetBuffer(0,__uuidof(ID3D11Texture2D),(LPVOID*)&backbuffer_texture);
   if (FAILED(result)) {
     return S_FALSE;
   }
-  result = gfx.device_->CreateRenderTargetView(backbuffer_texture,0,&gfx.target_);
+  result = device_->CreateRenderTargetView(backbuffer_texture,0,&target_);
   SafeRelease(&backbuffer_texture);
   if( FAILED( result ) ) {
     return S_FALSE;
@@ -192,20 +191,22 @@ int Core::CreateWindowSizeDependentResources() {
 		D3D11_BIND_DEPTH_STENCIL);
 
   
-	/*ID3D11Texture2D* depth_stencil_texture;
-  gfx.device_->CreateTexture2D(&depth_stencil_desc,nullptr,&depth_stencil_texture);
+	ID3D11Texture2D* depth_stencil_texture;
+  device_->CreateTexture2D(&depth_stencil_desc,nullptr,&depth_stencil_texture);
 	CD3D11_DEPTH_STENCIL_VIEW_DESC depth_stencil_view_desc(D3D11_DSV_DIMENSION_TEXTURE2D);
-  result = gfx.device_->CreateDepthStencilView(depth_stencil_texture,&depth_stencil_view_desc,&gfx.depth_stencil_);
+  result = device_->CreateDepthStencilView(depth_stencil_texture,&depth_stencil_view_desc,&depth_stencil_);
   SafeRelease(&depth_stencil_texture);
   if( FAILED( result ) ) {
     return S_FALSE;
-  }*/
+  }
   
-  gfx.context_->OMSetRenderTargets(1,&gfx.target_,nullptr);
+  context_->OMSetRenderTargets(1,&target_,depth_stencil_);
   
 	// Set the rendering viewport to target the entire window.
 	CD3D11_VIEWPORT viewport(0.0f,0.0f,m_renderTargetSizeWidth,m_renderTargetSizeHeight);
-  gfx.context_->RSSetViewports(1, &viewport);
+  context_->RSSetViewports(1, &viewport);
+
+
 
   return result;
 }

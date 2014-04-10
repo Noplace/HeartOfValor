@@ -16,39 +16,17 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#ifndef SYSTEMS_GRAPHICS_CORE_H
-#define SYSTEMS_GRAPHICS_CORE_H
-
-#include <WinCore/windows/windows.h>
-#ifdef _DEBUG
-#include <WinCore/log/log_manager.h>
-#endif
-#include <d3d11.h>
-#include <d3dcompiler.h>
-#include <DirectXMath.h>
+#ifndef SYSTEMS_RESOURCE_RESOURCE_MANAGER_H
+#define SYSTEMS_RESOURCE_RESOURCE_MANAGER_H
 
 namespace systems {
-namespace graphics {
+namespace resource {
 
-class Core {
+class ResourceManager {
  public:
-   Core();
-   virtual ~Core();
-   int Initialize(core::windows::Window* window);
-   int Deinitialize();
- protected:
-  struct {
-    ID3D11Device* device_;
-    ID3D11DeviceContext* context_;
-    IDXGISwapChain* swapchain_;
-    ID3D11RenderTargetView* target_;
-    ID3D11DepthStencilView* depth_stencil_;
-    D3D_FEATURE_LEVEL feature_level_;
-    uint32_t width_,height_;
-  } gfx;
-  core::windows::Window* window_;
-  int CreateDeviceResources();
-  int CreateWindowSizeDependentResources();
+  ResourceManager();
+  ~ResourceManager();
+
 };
 
 }

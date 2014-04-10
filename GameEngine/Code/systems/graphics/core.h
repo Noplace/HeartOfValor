@@ -16,27 +16,40 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#ifndef SYSTEMS_GAME_ENGINE_H
-#define SYSTEMS_GAME_ENGINE_H
+#ifndef SYSTEMS_GRAPHICS_CORE_H
+#define SYSTEMS_GRAPHICS_CORE_H
 
 #include <WinCore/windows/windows.h>
 #ifdef _DEBUG
 #include <WinCore/log/log_manager.h>
 #endif
-#include "../graphics/graphics.h"
+#include <d3d11_1.h>
+#include <d3dcompiler.h>
+#include <DirectXMath.h>
 
 namespace systems {
-namespace game {
+namespace graphics {
 
-class Engine : public graphics::Core {
+class Core {
  public:
-  Engine();
-  virtual ~Engine();
-  virtual int Initialize(core::windows::Window* window);
-  virtual int Deinitialize();
-  virtual int Update(double dt) = 0;
-  virtual int Render() = 0;
+  ID3D11Device* device_;
+  ID3D11DeviceContext* context_;
+  IDXGISwapChain* swapchain_;
+  ID3D11RenderTargetView* target_;
+  ID3D11DepthStencilView* depth_stencil_;
 
+  Core();
+  virtual ~Core();
+  int Initialize(core::windows::Window* window);
+  int Deinitialize();
+  uint32_t width() { return width_; } 
+  uint32_t height() { return height_; }
+ protected:
+  D3D_FEATURE_LEVEL feature_level_;
+  uint32_t width_,height_;
+  core::windows::Window* window_;
+  int CreateDeviceResources();
+  int CreateWindowSizeDependentResources();
 };
 
 }

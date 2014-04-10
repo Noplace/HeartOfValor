@@ -16,23 +16,28 @@
 * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE            *
 * SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.                                                         *
 *****************************************************************************************************************/
-#ifndef GAME_GAME_H
-#define GAME_GAME_H
+#include "engine.h"
 
-#include "../../../GameEngine/Code/systems/game/engine.h"
+namespace systems {
+namespace game {
 
-class Game : public systems::game::Engine {
- public:
-  Game() : systems::game::Engine() {}
-  ~Game() {}
-  int Initialize(core::windows::Window* window);
-  int Deinitialize();
-  int Update(double dt);
-  int Render();
- protected:
-  ID3D11VertexShader* main_vs;
-  ID3D11PixelShader*  main_ps;
-  ID3D11InputLayout*  input_layout_;
-};
+Engine::Engine() {
 
-#endif
+}
+
+Engine::~Engine() {
+
+}
+
+int Engine::Initialize(core::windows::Window* window) {
+  graphics.Initialize(window);
+  return S_OK;
+}
+
+int Engine::Deinitialize() {
+  graphics.Deinitialize();
+  return S_OK;
+}
+
+}
+}

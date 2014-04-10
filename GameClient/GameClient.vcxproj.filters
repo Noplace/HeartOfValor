@@ -24,16 +24,13 @@
     <ClCompile Include="Code\systems\io.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Code\systems\graphics\core.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="Code\systems\game\engine.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="Code\game\game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="Code\main_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Code\Tutorial03.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -47,22 +44,10 @@
     <ClInclude Include="Code\systems\debug.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Code\systems\graphics\core.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\systems\game\engine.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Code\game\game.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="Code\main_window.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\systems\graphics\camera.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="Code\systems\graphics\graphics.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -73,5 +58,10 @@
   <ItemGroup>
     <None Include="Content\HLSL\constant_buffers.hlsli" />
     <None Include="Content\HLSL\common.hlsli" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Content\Graphics\sword-clash.png">
+      <Filter>Resource Files</Filter>
+    </Image>
   </ItemGroup>
 </Project>
